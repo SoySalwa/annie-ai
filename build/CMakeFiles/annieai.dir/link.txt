@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/annieai.dir/link.d CMakeFiles/annieai.dir/src/main.cc.o -o annieai  /usr/lib64/libcurl.so

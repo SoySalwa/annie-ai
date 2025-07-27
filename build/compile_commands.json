@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/salwa/Documents/MyProjects/AI/AnnieAI/build",
+  "command": "/usr/bin/c++  -isystem /usr/local/include/laserpants/dotenv-0.9.3 -g -std=gnu++17 -o CMakeFiles/annieai.dir/src/main.cc.o -c /home/salwa/Documents/MyProjects/AI/AnnieAI/src/main.cc",
+  "file": "/home/salwa/Documents/MyProjects/AI/AnnieAI/src/main.cc",
+  "output": "CMakeFiles/annieai.dir/src/main.cc.o"
+}
+]
