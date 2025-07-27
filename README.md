@@ -6,7 +6,7 @@ You must clone this repository:
 ```
 git clone https://github.com/SoySalwa/annie-ai.git
 cd annieai
-mkdir build && build
+mkdir build && cd build
 cmake ..
 make
 sudo make install
