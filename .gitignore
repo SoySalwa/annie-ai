@@ -1,3 +1,3 @@
 .vscode
 build
-data/chat_history.json
+src/data/chat_history.json
