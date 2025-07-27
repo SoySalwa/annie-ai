@@ -1,7 +1,0 @@
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/annieai.dir
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/edit_cache.dir
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/rebuild_cache.dir
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/list_install_components.dir
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/install.dir
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/install/local.dir
-/home/salwa/Documents/MyProjects/AI/AnnieAI/build/CMakeFiles/install/strip.dir
