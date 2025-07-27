@@ -55,12 +55,6 @@ int main()
     bool is_inserted = chat_history.empty();
 
     std::string prompt_text;
-    std::ifstream prompt_file("src/data/prompt.txt");
-    if (prompt_file)
-    {
-        prompt_text.assign((std::istreambuf_iterator<char>(prompt_file)),
-                           std::istreambuf_iterator<char>());
-    }
 
     while (true)
     {
@@ -85,15 +79,6 @@ int main()
                                 {"parts", {{{"text", text}}}}});
 
         std::vector<nlohmann::json> current_request = chat_history;
-
-        if (is_inserted && !prompt_text.empty())
-        {
-            nlohmann::json prompt_obj = {
-                {"role", "user"},
-                {"parts", {{{"text", prompt_text}}}}};
-            current_request.insert(current_request.begin(), prompt_obj);
-            is_inserted = false;
-        }
 
         nlohmann::json chat_history_json;
         chat_history_json["contents"] = current_request;
