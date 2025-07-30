@@ -4,54 +4,52 @@
 #include <cstdlib>
 #include <fstream>
 #include <filesystem>
+#include "data/file_system.hpp"
+#include "data/history.hpp"
+#include <thread>
+#include <chrono>
+#include <atomic>
 
-void save_history(const std::vector<nlohmann::json> &history, const std::string &filename = "src/data/chat_history.json")
+void showLoadingCircle(std::atomic<bool> &running)
 {
-    std::filesystem::create_directories("src/data");
-    std::ofstream out(filename);
-    if (out.is_open())
+    const std::vector<std::string> spinner = {"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"};
+    ;
+    size_t spinner_index = 0;
+
+    while (running.load())
     {
-        nlohmann::json j;
-        j["contents"] = history;
-        out << j.dump(2);
+        std::cout << "\r" << spinner[spinner_index++ % spinner.size()] << " Thinking..." << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
+    std::cout << "\r" << std::string(20, ' ') << "\r";
 }
 
-void load_history(std::vector<nlohmann::json> &history, const std::string &filename = "src/data/chat_history.json")
-{
-    std::ifstream in(filename);
-    if (in.is_open())
-    {
-        nlohmann::json j;
-        in >> j;
-        if (j.contains("contents") && j["contents"].is_array())
-        {
-            history = j["contents"].get<std::vector<nlohmann::json>>();
-        }
-    }
-}
 std::vector<nlohmann::json> chat_history;
 
 int main()
 {
-    // dotenv::init();
-    // const char *api_key_cstr = std::getenv("GOOGLE_API_TOKEN");
+    std::cout << "\033[32m" <<
+        R"(
+__        __   _                            _ _ 
+\ \      / /__| | ___ ___  _ __ ___   ___  | | |
+ \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \ | | |
+  \ V  V /  __/ | (_| (_) | | | | | |  __/ |_|_|
+   \_/\_/ \___|_|\___\___/|_| |_| |_|\___| (_|_)
+                                                          
+        Welcome to AnnieAI Chatbot Console
+)" << "\033[0m"
+              << "\n";
 
-    /*  if (!api_key_cstr)
-     {
-         std::cerr << "Error: GOOGLE_API_TOKEN environment variable is not set." << std::endl;
-         return 1;
-     } */
+    std::cout << "\033[93mType 'exit' or 'quit' to exit.\033[0m" << std::endl;
+    std::cout << "\033[93mType 'clear_history' to clear the chat history.\033[0m" << std::endl;
+    std::cout << "\n";
 
-    /*     std::string api_key = api_key_cstr;
-     */
     std::string url = "https://backend-annie-ai.vercel.app/api/chat";
 
     std::vector<std::string>
         headers = {
             "Content-Type: application/json"};
     load_history(chat_history);
-
     bool is_inserted = chat_history.empty();
 
     std::string prompt_text;
@@ -61,6 +59,7 @@ int main()
         std::cout << "Your message: ";
         std::string text;
         std::getline(std::cin, text);
+
         if (text == "clear_history")
         {
             chat_history.clear();
@@ -84,29 +83,20 @@ int main()
         chat_history_json["contents"] = current_request;
         std::string body = chat_history_json.dump();
 
-        /*
-                std::string body = R"({
-            "contents": [
-                {
-                    "parts": [
-                        {
-                            "text": ")" +
-                                   text + R"("
-                        }
-                    ]
-                }
-            ]
-        })"; */
-
         DataRequest request(url, headers, body);
         RequestAPI api;
+        std::atomic<bool> loading(true);
+        std::thread loading_thread(showLoadingCircle, std::ref(loading));
+
         std::string response = api.send_request(request);
+
+        loading = false;
+        loading_thread.join();
         std::cout << "\033[32m[You]:\033[0m " << text << std::endl;
         try
         {
             nlohmann::json data = nlohmann::json::parse(response);
             std::string ai_response = data["candidates"][0]["content"]["parts"][0]["text"];
-            std::cout << "Thinking...\n";
             std::cout << "\033[34m[AnnieAI]:\033[0m " << ai_response << std::endl;
             chat_history.push_back({{"role", "model"},
                                     {"parts", {{{"text", ai_response}}}}});
