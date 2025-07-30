@@ -10,7 +10,7 @@ find_package(CURL REQUIRED)
 
 add_executable(annieai 
 src/main.cc 
-src/req/request_api.hpp)
+)
 
 target_include_directories(annieai PRIVATE ${CURL_INCLUDE_DIRS})
 target_link_libraries(annieai PRIVATE ${CURL_LIBRARIES})
